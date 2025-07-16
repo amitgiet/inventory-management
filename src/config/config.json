@@ -1,0 +1,25 @@
+{
+  "development": {
+    "username": "inventory-managements",
+    "password": "X7iQs7r#gdFG5Kb",
+    "database": "inventory-managements2",
+    "host": "192.168.1.35",
+    "dialect": "mysql",
+    "logging": false
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "inventory-managements",
+    "password": "X7iQs7r#gdFG5Kb",
+    "database": "inventory-managements2",
+    "host": "192.168.1.35",
+    "dialect": "mysql",
+    "logging": false
+  }
+}
