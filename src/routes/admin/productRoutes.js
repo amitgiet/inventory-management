@@ -2,17 +2,13 @@ const productController = require('../../controllers/productController');
 const router = require('express').Router();
 
 
-// Create
-router.post('/', productController.createCategory);
+router.post('/', productController.CreateProduct);
 
-// Read (all + by ID)
-router.get('/', productController.getAllCategories);
-router.get('/:id', productController.getCategoryById);
+router.get('/', productController.GetAllProducts);
+router.get('/:id', productController.GetProductById);
 
-// Update
-router.put('/:id', productController.updateCategory);
+router.put('/:id', productController.UpdateProduct);
 
-// Delete
-router.delete('/:id', productController.deleteCategory);
+router.delete('/:id', productController.DeleteProduct);
 
 module.exports = router;

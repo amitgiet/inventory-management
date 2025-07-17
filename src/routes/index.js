@@ -1,9 +1,9 @@
 const apiResponder = require("../middlewares/apiResponder")
-const authRoutes = require("./admin/index");
+const adminRoutes = require("./admin/index");
 
 module.exports = (app)=>{
     app.use(apiResponder);
-    app.use("/admin", authRoutes);
+    app.use("/admin", adminRoutes);
 
     return app;
 }
