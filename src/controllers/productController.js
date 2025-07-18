@@ -7,10 +7,18 @@ const {
 const slugify = require("slugify");
 const Validator = require("validatorjs");
 
-/*
-  @route   POST /product
-  @desc    Create a new product category
-  @access  Private
+/* 
+  @ApiPath: /products
+  @Method: POST
+  @Params: { 
+    product_name: "string",
+    product_code: "string", 
+    product_price: "integer",
+    product_cost: "integer",
+    category_ids: "array of integers"
+  }
+  @Description: This API creates a new product with associated categories.
+  @Access: Public
 */
 const CreateProduct = async (req, res) => {
   try {
@@ -53,10 +61,12 @@ const CreateProduct = async (req, res) => {
   }
 };
 
-/*
-  @route   Get /product
-  @desc    Get all roducts
-  @access  Private
+/* 
+  @ApiPath: /products
+  @Method: GET
+  @Params: none
+  @Description: Fetch all products with their associated categories.
+  @Access: Public
 */
 const GetAllProducts = async (req, res) => {
   try {
@@ -74,10 +84,12 @@ const GetAllProducts = async (req, res) => {
   }
 };
 
-/*
-  @route   GET /product/:id
-  @desc    Get Product by id
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: GET
+  @Params: { id: "Product ID" }
+  @Description: Fetch a single product by ID.
+  @Access: Public
 */
 const GetProductById = async (req, res) => {
   try {
@@ -96,10 +108,19 @@ const GetProductById = async (req, res) => {
   }
 };
 
-/*
-  @route   POST /product/:id
-  @desc    Update product
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: PUT
+  @Params: { 
+    id: "Product ID",
+    product_name: "string",
+    product_code: "string", 
+    product_price: "integer",
+    product_cost: "integer",
+    category_ids: "array of integers"
+  }
+  @Description: Update an existing product by ID with associated categories.
+  @Access: Public
 */
 const UpdateProduct = async (req, res) => {
   try {
@@ -154,10 +175,12 @@ const UpdateProduct = async (req, res) => {
 };
 
 
-/*
-  @route   DELETE /product/:id
-  @desc    Delete Product by id
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: DELETE
+  @Params: { id: "Product ID" }
+  @Description: Delete a product by ID.
+  @Access: Public
 */
 const DeleteProduct = async (req, res) => {
   try {
@@ -178,10 +201,18 @@ const DeleteProduct = async (req, res) => {
   }
 };
 
-/*
-  @route   POST /product-category
-  @desc    Create a new product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories
+  @Method: POST
+  @Params: { 
+    name: "string",
+    slug: "string (optional)",
+    parent_id: "integer (optional)",
+    is_active: "boolean (optional)",
+    attributes: "array (optional)"
+  }
+  @Description: This API creates a new product category with optional attributes.
+  @Access: Public
 */
 const CreateProductCategory = async (req, res) => {
   try {
@@ -264,10 +295,12 @@ const CreateProductCategory = async (req, res) => {
   }
 };
 
-/*
-  @route   GET /product-category
-  @desc    Get all product categories
-  @access  Public
+/* 
+  @ApiPath: /product-categories
+  @Method: GET
+  @Params: none
+  @Description: Fetch all product categories with their attributes and values.
+  @Access: Public
 */
 const GetAllProductCategories = async (req, res) => {
   try {
@@ -302,10 +335,12 @@ const GetAllProductCategories = async (req, res) => {
   }
 };
 
-/*
-  @route   GET /product-category/:id
-  @desc    Get a single product category by ID
-  @access  Public
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: GET
+  @Params: { id: "Category ID" }
+  @Description: Fetch a single product category by ID with its attributes and values.
+  @Access: Public
 */
 const GetProductCategoryById = async (req, res) => {
   try {
@@ -335,10 +370,19 @@ const GetProductCategoryById = async (req, res) => {
   }
 };
 
-/*
-  @route   PUT /product-category/:id
-  @desc    Update a product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: PUT
+  @Params: { 
+    id: "Category ID",
+    name: "string (optional)",
+    slug: "string (optional)",
+    parent_id: "integer (optional)",
+    is_active: "boolean (optional)",
+    attributes: "array (optional)"
+  }
+  @Description: Update an existing product category by ID with optional attributes.
+  @Access: Public
 */
 const UpdateProductCategory = async (req, res) => {
   try {
@@ -415,10 +459,12 @@ const UpdateProductCategory = async (req, res) => {
   }
 };
 
-/*
-  @route   DELETE /product-category/:id
-  @desc    Delete a product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: DELETE
+  @Params: { id: "Category ID" }
+  @Description: Delete a product category by ID.
+  @Access: Public
 */
 const DeleteProductCategory = async (req, res) => {
   try {
