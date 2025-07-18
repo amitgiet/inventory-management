@@ -1,4 +1,5 @@
 const { Expense } = require("../models");
+const { Op } = require("sequelize");
 
 /*
   @ApiPath: /expenses
@@ -50,7 +51,17 @@ const createExpense = async (req, res) => {
 */
 const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll({ include: ["category"] });
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { details: { [Op.like]: `%${search}%` } },
+          { reference: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
+    const expenses = await Expense.findAll({ where, include: ["category"] });
     res.apiSuccess("Expenses fetched", { expenses });
   } catch (error) {
     res.apiError("Internal server error", error.message);

@@ -1,4 +1,5 @@
 const { Manufacturer } = require('../models');
+const { Op } = require("sequelize");
 
 /*
   @ApiPath: /manufacturers
@@ -36,7 +37,14 @@ exports.createManufacturer = async (req, res) => {
 */
 exports.getAllManufacturers = async (req, res) => {
   try {
-    const manufacturers = await Manufacturer.findAll();
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        manufacturer_name: { [Op.like]: `%${search}%` },
+      };
+    }
+    const manufacturers = await Manufacturer.findAll({ where });
     res.json({ success: true, data: manufacturers });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error", error: error.message });

@@ -1,5 +1,6 @@
 const slugify = require("slugify");
 const { Brand } = require("../models");
+const { Op } = require("sequelize");
 
 /* 
   @ApiPath: /brands
@@ -44,7 +45,14 @@ const createBrand = async (req, res) => {
 */
 const getAllBrands = async (req, res) => {
   try {
-    const brands = await Brand.findAll();
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        brand_name: { [Op.like]: `%${search}%` },
+      };
+    }
+    const brands = await Brand.findAll({ where });
     res.apiSuccess("Brands fetched successfully", brands);
   } catch (error) {
     res.apiError("Internal server error", 500, error);

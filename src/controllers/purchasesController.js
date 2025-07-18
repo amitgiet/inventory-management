@@ -1,5 +1,6 @@
 const { Purchase, Supplier } = require("../models");
 const Validator = require("validatorjs");
+const { Op } = require("sequelize");
 
 /**
  * @ApiPath /purchase
@@ -104,7 +105,17 @@ const createPurchase = async (req, res) => {
  */
 const getAllPurchases = async (req, res) => {
   try {
-    const purchases = await Purchase.findAll();
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { supplier_name: { [Op.like]: `%${search}%` } },
+          { reference: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
+    const purchases = await Purchase.findAll({ where });
     res.status(200).json({ success: true, data: purchases });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });

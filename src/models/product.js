@@ -42,10 +42,30 @@ module.exports = (sequelize, DataTypes) => {
     product_perishable: DataTypes.TEXT,
     product_expiry: DataTypes.DATE,
     brand_id: DataTypes.INTEGER,
-    manufacturer_id: DataTypes.INTEGER
+    manufacturer_id: DataTypes.INTEGER,
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    banner: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'Product',
+    getterMethods: {
+      image_url() {
+        return this.getDataValue("image")
+          ? `${process.env.BASEURL || 'http://localhost:3000'}/uploads/products/${this.getDataValue("image")}`
+          : null;
+      },
+      banner_url() {
+        return this.getDataValue("banner")
+          ? `${process.env.BASEURL || 'http://localhost:3000'}/uploads/products/${this.getDataValue("banner")}`
+          : null;
+      }
+    }
   });
   return Product;
 };

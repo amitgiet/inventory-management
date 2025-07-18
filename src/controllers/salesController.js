@@ -1,5 +1,6 @@
 const { Sales, Customer } = require("../models");
 const Validator = require("validatorjs");
+const { Op } = require("sequelize");
 
 /**
  * @ApiPath /sales
@@ -99,7 +100,18 @@ const createSale = async (req, res) => {
  */
 const getAllSales = async (req, res) => {
   try {
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { customer_name: { [Op.like]: `%${search}%` } },
+          { reference: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
     const sales = await Sales.findAll({
+      where,
       include: [
         {
           model: Customer,

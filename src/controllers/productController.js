@@ -6,6 +6,9 @@ const {
 } = require("../models");
 const slugify = require("slugify");
 const Validator = require("validatorjs");
+const fs = require("fs");
+const path = require("path");
+const { Op } = require("sequelize");
 
 /* 
   @ApiPath: /products
@@ -27,16 +30,22 @@ const CreateProduct = async (req, res) => {
       product_code: "required|string",
       product_price: "required|integer",
       product_cost: "required|integer",
-      category_ids: "array|required",
-      "category_ids.*": "integer",
+      category_ids: "required"
     });
-
     if (validation.fails()) {
       const [firstError] = Object.values(validation.errors.all()).flat();
-      return res.status(422).json({ success: false, message: firstError });
+      return res.apiError(firstError, 422);
     }
 
     const { category_ids, ...productData } = req.body;
+
+    // Handle image uploads
+    if (req.files && req.files.image) {
+      productData.image = req.files.image[0].filename;
+    }
+    if (req.files && req.files.banner) {
+      productData.banner = req.files.banner[0].filename;
+    }
 
     const product = await Product.create(productData);
 
@@ -46,18 +55,10 @@ const CreateProduct = async (req, res) => {
       include: [{ model: Category, as: "categories" }],
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully",
-      data: productWithCategories,
-    });
+    res.apiSuccess("Product created successfully", productWithCategories);
   } catch (error) {
     console.error("CreateProduct Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
@@ -70,17 +71,25 @@ const CreateProduct = async (req, res) => {
 */
 const GetAllProducts = async (req, res) => {
   try {
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { product_name: { [Op.like]: `%${search}%` } },
+          { product_code: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
+    console.log(where)
     const products = await Product.findAll({
+      where,
       order: [["id", "DESC"]],
       include: [{ model: Category, as: "categories" }],
     });
-    res.json({ success: true, data: products });
+    res.apiSuccess("Products fetched successfully", products);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
@@ -95,16 +104,10 @@ const GetProductById = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    res.json({ success: true, data: product });
+      return res.apiError("Product not found", 404);
+    res.apiSuccess("Product fetched successfully", product);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
@@ -135,18 +138,37 @@ const UpdateProduct = async (req, res) => {
 
     if (validation.fails()) {
       const [firstError] = Object.values(validation.errors.all()).flat();
-      return res.status(422).json({ success: false, message: firstError });
+      return res.apiError(firstError, 422);
     }
 
     const product = await Product.findByPk(req.params.id);
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+      return res.apiError("Product not found", 404);
     }
 
     const { category_ids, ...productData } = req.body;
+
+    // Handle image uploads
+    if (req.files && req.files.image) {
+      // Delete old image if exists
+      if (product.image) {
+        const oldImagePath = path.join(__dirname, '../uploads/products', product.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      productData.image = req.files.image[0].filename;
+    }
+    if (req.files && req.files.banner) {
+      // Delete old banner if exists
+      if (product.banner) {
+        const oldBannerPath = path.join(__dirname, '../uploads/products', product.banner);
+        if (fs.existsSync(oldBannerPath)) {
+          fs.unlinkSync(oldBannerPath);
+        }
+      }
+      productData.banner = req.files.banner[0].filename;
+    }
 
     // Update product fields
     await product.update(productData);
@@ -159,18 +181,10 @@ const UpdateProduct = async (req, res) => {
       include: [{ model: Category, as: "categories" }],
     });
 
-    return res.json({
-      success: true,
-      message: "Product updated successfully",
-      data: updatedProduct,
-    });
+    return res.apiSuccess("Product updated successfully", updatedProduct);
   } catch (error) {
     console.error("UpdateProduct Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
@@ -186,18 +200,12 @@ const DeleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.apiError("Product not found", 404);
 
     await product.destroy();
-    res.json({ success: true, message: "Product deleted successfully" });
+    res.apiSuccess("Product deleted successfully");
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 

@@ -1,0 +1,1519 @@
+{
+  "info": {
+    "_postman_id": "b1e1b1e1-0000-0000-0000-000000000000",
+    "name": "Inventory Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Inventory Management System API Collection"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000/admin" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"refreshToken\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["refresh"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "product_name",
+                  "value": "Sample Product",
+                  "type": "text"
+                },
+                {
+                  "key": "product_code",
+                  "value": "PROD001",
+                  "type": "text"
+                },
+                {
+                  "key": "product_price",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "product_cost",
+                  "value": "80",
+                  "type": "text"
+                },
+                {
+                  "key": "category_ids",
+                  "value": "[1, 2]",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "banner",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/product",
+              "host": ["{{base_url}}"],
+              "path": ["product"]
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/product?search=keyword",
+              "host": ["{{base_url}}"],
+              "path": ["product"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "keyword",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/product/1",
+              "host": ["{{base_url}}"],
+              "path": ["product", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "product_name",
+                  "value": "Updated Product",
+                  "type": "text"
+                },
+                {
+                  "key": "product_code",
+                  "value": "PROD001",
+                  "type": "text"
+                },
+                {
+                  "key": "product_price",
+                  "value": "120",
+                  "type": "text"
+                },
+                {
+                  "key": "product_cost",
+                  "value": "90",
+                  "type": "text"
+                },
+                {
+                  "key": "category_ids",
+                  "value": "[1, 2, 3]",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "banner",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/product/1",
+              "host": ["{{base_url}}"],
+              "path": ["product", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/product/1",
+              "host": ["{{base_url}}"],
+              "path": ["product", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏷️ Product Categories",
+      "item": [
+        {
+          "name": "Create Product Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronics\",\n  \"slug\": \"electronics\",\n  \"parent_id\": null,\n  \"is_active\": true,\n  \"attributes\": [\n    {\n      \"name\": \"Color\",\n      \"values\": [\"Red\", \"Blue\", \"Green\"]\n    },\n    {\n      \"name\": \"Size\",\n      \"values\": [\"Small\", \"Medium\", \"Large\"]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/category",
+              "host": ["{{base_url}}"],
+              "path": ["category"]
+            }
+          }
+        },
+        {
+          "name": "Get All Product Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/category",
+              "host": ["{{base_url}}"],
+              "path": ["category"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/category/1",
+              "host": ["{{base_url}}"],
+              "path": ["category", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Product Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Electronics\",\n  \"slug\": \"updated-electronics\",\n  \"parent_id\": 1,\n  \"is_active\": true,\n  \"attributes\": [\n    {\n      \"name\": \"Brand\",\n      \"values\": [\"Apple\", \"Samsung\", \"Sony\"]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/category/1",
+              "host": ["{{base_url}}"],
+              "path": ["category", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/category/1",
+              "host": ["{{base_url}}"],
+              "path": ["category", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏭 Brands",
+      "item": [
+        {
+          "name": "Create Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand_name\": \"Apple\",\n  \"brand_slug\": \"apple\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/brand",
+              "host": ["{{base_url}}"],
+              "path": ["brand"]
+            }
+          }
+        },
+        {
+          "name": "Get All Brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/brand?search=keyword",
+              "host": ["{{base_url}}"],
+              "path": ["brand"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "keyword",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Brand by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/brand/1",
+              "host": ["{{base_url}}"],
+              "path": ["brand", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand_name\": \"Apple Inc.\",\n  \"brand_slug\": \"apple-inc\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/brand/1",
+              "host": ["{{base_url}}"],
+              "path": ["brand", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Brand",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/brand/1",
+              "host": ["{{base_url}}"],
+              "path": ["brand", "1"]
+            }
+          }
+                 }
+       ]
+     },
+     {
+       "name": "💰 Expenses",
+       "item": [
+         {
+           "name": "Create Expense",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"category_id\": 1,\n  \"date\": \"2025-07-17\",\n  \"details\": \"Office supplies purchase\",\n  \"amount\": 500\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/expenses",
+               "host": ["{{base_url}}"],
+               "path": ["expenses"]
+             }
+           }
+         },
+         {
+           "name": "Get All Expenses",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expenses?search=keyword",
+               "host": ["{{base_url}}"],
+               "path": ["expenses"],
+               "query": [
+                 {
+                   "key": "search",
+                   "value": "keyword",
+                   "disabled": true
+                 }
+               ]
+             }
+           }
+         },
+         {
+           "name": "Get Expense by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expenses/1",
+               "host": ["{{base_url}}"],
+               "path": ["expenses", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Expense",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"category_id\": 2,\n  \"date\": \"2025-07-18\",\n  \"details\": \"Updated office supplies\",\n  \"amount\": 600\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/expenses/1",
+               "host": ["{{base_url}}"],
+               "path": ["expenses", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Expense",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expenses/1",
+               "host": ["{{base_url}}"],
+               "path": ["expenses", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "📂 Expense Categories",
+       "item": [
+         {
+           "name": "Create Expense Category",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"category_name\": \"Office Supplies\",\n  \"category_description\": \"All office related expenses\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/expense-categories",
+               "host": ["{{base_url}}"],
+               "path": ["expense-categories"]
+             }
+           }
+         },
+         {
+           "name": "Get All Expense Categories",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expense-categories",
+               "host": ["{{base_url}}"],
+               "path": ["expense-categories"]
+             }
+           }
+         },
+         {
+           "name": "Get Expense Category by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expense-categories/1",
+               "host": ["{{base_url}}"],
+               "path": ["expense-categories", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Expense Category",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"category_name\": \"Updated Office Supplies\",\n  \"category_description\": \"Updated office related expenses\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/expense-categories/1",
+               "host": ["{{base_url}}"],
+               "path": ["expense-categories", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Expense Category",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/expense-categories/1",
+               "host": ["{{base_url}}"],
+               "path": ["expense-categories", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "📦 Purchases",
+       "item": [
+         {
+           "name": "Create Purchase",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-17\",\n  \"supplier_id\": 1,\n  \"location_id\": 1,\n  \"supplier_name\": \"ABC Suppliers\",\n  \"tax_percentage\": 10,\n  \"discount_percentage\": 5,\n  \"shipping_amount\": 50,\n  \"total_amount\": 1000,\n  \"paid_amount\": 800,\n  \"due_amount\": 200,\n  \"status\": \"completed\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"bank_transfer\",\n  \"note\": \"Monthly purchase order\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/purchase/purchases",
+               "host": ["{{base_url}}"],
+               "path": ["purchase", "purchases"]
+             }
+           }
+         },
+         {
+           "name": "Get All Purchases",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase/purchases?search=keyword",
+               "host": ["{{base_url}}"],
+               "path": ["purchase", "purchases"],
+               "query": [
+                 {
+                   "key": "search",
+                   "value": "keyword",
+                   "disabled": true
+                 }
+               ]
+             }
+           }
+         },
+         {
+           "name": "Get Purchase by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase/purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase", "purchases", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Purchase",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-18\",\n  \"supplier_id\": 2,\n  \"location_id\": 1,\n  \"supplier_name\": \"XYZ Suppliers\",\n  \"tax_percentage\": 12,\n  \"discount_percentage\": 3,\n  \"shipping_amount\": 75,\n  \"total_amount\": 1200,\n  \"paid_amount\": 1000,\n  \"due_amount\": 200,\n  \"status\": \"pending\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"cash\",\n  \"note\": \"Updated purchase order\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/purchase/purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase", "purchases", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Purchase",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase/purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase", "purchases", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "🏢 Suppliers",
+       "item": [
+         {
+           "name": "Create Supplier",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"supplier_name\": \"ABC Company\",\n  \"supplier_email\": \"contact@abc.com\",\n  \"supplier_phone\": \"+1234567890\",\n  \"city\": \"New York\",\n  \"country\": \"USA\",\n  \"address\": \"123 Business St, NY 10001\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/suppliers",
+               "host": ["{{base_url}}"],
+               "path": ["suppliers"]
+             }
+           }
+         },
+         {
+           "name": "Get All Suppliers",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/suppliers",
+               "host": ["{{base_url}}"],
+               "path": ["suppliers"]
+             }
+           }
+         },
+         {
+           "name": "Get Supplier by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/suppliers/1",
+               "host": ["{{base_url}}"],
+               "path": ["suppliers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Supplier",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"supplier_name\": \"ABC Company Ltd\",\n  \"supplier_email\": \"info@abc.com\",\n  \"supplier_phone\": \"+1234567891\",\n  \"city\": \"Los Angeles\",\n  \"country\": \"USA\",\n  \"address\": \"456 Corporate Ave, LA 90210\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/suppliers/1",
+               "host": ["{{base_url}}"],
+               "path": ["suppliers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Supplier",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/suppliers/1",
+               "host": ["{{base_url}}"],
+               "path": ["suppliers", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "🏭 Manufacturers",
+       "item": [
+         {
+           "name": "Create Manufacturer",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"manufacturer_name\": \"TechCorp\",\n  \"status\": true\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/manufacturers",
+               "host": ["{{base_url}}"],
+               "path": ["manufacturers"]
+             }
+           }
+         },
+         {
+           "name": "Get All Manufacturers",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufacturers?search=keyword",
+               "host": ["{{base_url}}"],
+               "path": ["manufacturers"],
+               "query": [
+                 {
+                   "key": "search",
+                   "value": "keyword",
+                   "disabled": true
+                 }
+               ]
+             }
+           }
+         },
+         {
+           "name": "Get Manufacturer by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufacturers/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufacturers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Manufacturer",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"manufacturer_name\": \"TechCorp Industries\",\n  \"status\": true\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/manufacturers/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufacturers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Manufacturer",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufacturers/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufacturers", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "🏭 Manufactured Purchases",
+       "item": [
+         {
+           "name": "Create Manufactured Purchase",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-17\",\n  \"location_id\": 1,\n  \"reference\": \"MP-001\",\n  \"supplier_id\": 1,\n  \"supplier_name\": \"Manufacturing Co\",\n  \"tax_percentage\": 15,\n  \"tax_amount\": 150,\n  \"discount_percentage\": 10,\n  \"discount_amount\": 100,\n  \"total_excluding_tax\": 850,\n  \"shipping_amount\": 75,\n  \"total_amount\": 1075,\n  \"paid_amount\": 900,\n  \"due_amount\": 175,\n  \"status\": \"completed\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"bank_transfer\",\n  \"note\": \"Manufacturing purchase\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/manufactured-purchases",
+               "host": ["{{base_url}}"],
+               "path": ["manufactured-purchases"]
+             }
+           }
+         },
+         {
+           "name": "Get All Manufactured Purchases",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufactured-purchases",
+               "host": ["{{base_url}}"],
+               "path": ["manufactured-purchases"]
+             }
+           }
+         },
+         {
+           "name": "Get Manufactured Purchase by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufactured-purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufactured-purchases", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Manufactured Purchase",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-18\",\n  \"location_id\": 2,\n  \"reference\": \"MP-002\",\n  \"supplier_id\": 2,\n  \"supplier_name\": \"Updated Manufacturing Co\",\n  \"tax_percentage\": 12,\n  \"tax_amount\": 120,\n  \"discount_percentage\": 8,\n  \"discount_amount\": 80,\n  \"total_excluding_tax\": 800,\n  \"shipping_amount\": 60,\n  \"total_amount\": 980,\n  \"paid_amount\": 800,\n  \"due_amount\": 180,\n  \"status\": \"pending\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"cash\",\n  \"note\": \"Updated manufacturing purchase\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/manufactured-purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufactured-purchases", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Manufactured Purchase",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/manufactured-purchases/1",
+               "host": ["{{base_url}}"],
+               "path": ["manufactured-purchases", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "💳 Purchase Payments",
+       "item": [
+         {
+           "name": "Create Purchase Payment",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"purchase_id\": 1,\n  \"amount\": 200,\n  \"date\": \"2025-07-17\",\n  \"payment_method\": \"bank_transfer\",\n  \"note\": \"Partial payment for purchase\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/purchase-payments",
+               "host": ["{{base_url}}"],
+               "path": ["purchase-payments"]
+             }
+           }
+         },
+         {
+           "name": "Get All Purchase Payments",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase-payments",
+               "host": ["{{base_url}}"],
+               "path": ["purchase-payments"]
+             }
+           }
+         },
+         {
+           "name": "Get Purchase Payment by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase-payments/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase-payments", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Purchase Payment",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"purchase_id\": 1,\n  \"amount\": 250,\n  \"date\": \"2025-07-18\",\n  \"payment_method\": \"cash\",\n  \"note\": \"Updated payment for purchase\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/purchase-payments/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase-payments", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Purchase Payment",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/purchase-payments/1",
+               "host": ["{{base_url}}"],
+               "path": ["purchase-payments", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "🛒 Sales",
+       "item": [
+         {
+           "name": "Create Sale",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-17\",\n  \"customer_id\": 1,\n  \"location_id\": 1,\n  \"customer_name\": \"John Doe\",\n  \"tax_percentage\": 10,\n  \"discount_percentage\": 5,\n  \"shipping_amount\": 25,\n  \"total_amount\": 1000,\n  \"paid_amount\": 800,\n  \"due_amount\": 200,\n  \"status\": \"completed\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"credit_card\",\n  \"terms\": \"Net 30\",\n  \"note\": \"Regular customer sale\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/sales",
+               "host": ["{{base_url}}"],
+               "path": ["sales"]
+             }
+           }
+         },
+         {
+           "name": "Get All Sales",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/sales?search=keyword",
+               "host": ["{{base_url}}"],
+               "path": ["sales"],
+               "query": [
+                 {
+                   "key": "search",
+                   "value": "keyword",
+                   "disabled": true
+                 }
+               ]
+             }
+           }
+         },
+         {
+           "name": "Get Sale by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/sales/1",
+               "host": ["{{base_url}}"],
+               "path": ["sales", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Sale",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"date\": \"2025-07-18\",\n  \"customer_id\": 2,\n  \"location_id\": 1,\n  \"customer_name\": \"Jane Smith\",\n  \"tax_percentage\": 12,\n  \"discount_percentage\": 3,\n  \"shipping_amount\": 30,\n  \"total_amount\": 1200,\n  \"paid_amount\": 1000,\n  \"due_amount\": 200,\n  \"status\": \"pending\",\n  \"payment_status\": \"partial\",\n  \"payment_method\": \"cash\",\n  \"terms\": \"Net 15\",\n  \"note\": \"Updated sale information\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/sales/1",
+               "host": ["{{base_url}}"],
+               "path": ["sales", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Sale",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/sales/1",
+               "host": ["{{base_url}}"],
+               "path": ["sales", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "💱 Currencies",
+       "item": [
+         {
+           "name": "Create Currency",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"currency_name\": \"US Dollar\",\n  \"code\": \"USD\",\n  \"symbol\": \"$\",\n  \"thousand_separator\": \",\",\n  \"decimal_separator\": \".\",\n  \"exchange_rate\": 1\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/currencies",
+               "host": ["{{base_url}}"],
+               "path": ["currencies"]
+             }
+           }
+         },
+         {
+           "name": "Get All Currencies",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/currencies",
+               "host": ["{{base_url}}"],
+               "path": ["currencies"]
+             }
+           }
+         },
+         {
+           "name": "Get Currency by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/currencies/1",
+               "host": ["{{base_url}}"],
+               "path": ["currencies", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Currency",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"currency_name\": \"US Dollar\",\n  \"code\": \"USD\",\n  \"symbol\": \"$\",\n  \"thousand_separator\": \",\",\n  \"decimal_separator\": \".\",\n  \"exchange_rate\": 1.05\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/currencies/1",
+               "host": ["{{base_url}}"],
+               "path": ["currencies", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Currency",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/currencies/1",
+               "host": ["{{base_url}}"],
+               "path": ["currencies", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "👥 Customers",
+       "item": [
+         {
+           "name": "Create Customer",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"customer_name\": \"John Doe\",\n  \"customer_email\": \"john@example.com\",\n  \"customer_phone\": \"+1234567890\",\n  \"city\": \"New York\",\n  \"country\": \"USA\",\n  \"address\": \"123 Customer St, NY 10001\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/customers",
+               "host": ["{{base_url}}"],
+               "path": ["customers"]
+             }
+           }
+         },
+         {
+           "name": "Get All Customers",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/customers",
+               "host": ["{{base_url}}"],
+               "path": ["customers"]
+             }
+           }
+         },
+         {
+           "name": "Get Customer by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/customers/1",
+               "host": ["{{base_url}}"],
+               "path": ["customers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Customer",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"customer_name\": \"John Doe Jr\",\n  \"customer_email\": \"john.jr@example.com\",\n  \"customer_phone\": \"+1234567891\",\n  \"city\": \"Los Angeles\",\n  \"country\": \"USA\",\n  \"address\": \"456 Customer Ave, LA 90210\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/customers/1",
+               "host": ["{{base_url}}"],
+               "path": ["customers", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Customer",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/customers/1",
+               "host": ["{{base_url}}"],
+               "path": ["customers", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "📍 Locations",
+       "item": [
+         {
+           "name": "Create Location",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"location_name\": \"Main Warehouse\",\n  \"location_address\": \"123 Warehouse St, NY 10001\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/locations",
+               "host": ["{{base_url}}"],
+               "path": ["locations"]
+             }
+           }
+         },
+         {
+           "name": "Get All Locations",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/locations",
+               "host": ["{{base_url}}"],
+               "path": ["locations"]
+             }
+           }
+         },
+         {
+           "name": "Get Location by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/locations/1",
+               "host": ["{{base_url}}"],
+               "path": ["locations", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Location",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"location_name\": \"Updated Main Warehouse\",\n  \"location_address\": \"456 Updated Warehouse Ave, NY 10002\"\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/locations/1",
+               "host": ["{{base_url}}"],
+               "path": ["locations", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Location",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/locations/1",
+               "host": ["{{base_url}}"],
+               "path": ["locations", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "💰 Taxes",
+       "item": [
+         {
+           "name": "Create Tax",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"tax_name\": \"Sales Tax\",\n  \"tax_per\": 10.5\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/taxs",
+               "host": ["{{base_url}}"],
+               "path": ["taxs"]
+             }
+           }
+         },
+         {
+           "name": "Get All Taxes",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/taxs",
+               "host": ["{{base_url}}"],
+               "path": ["taxs"]
+             }
+           }
+         },
+         {
+           "name": "Get Tax by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/taxs/1",
+               "host": ["{{base_url}}"],
+               "path": ["taxs", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Tax",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"tax_name\": \"Updated Sales Tax\",\n  \"tax_per\": 12.0\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/taxs/1",
+               "host": ["{{base_url}}"],
+               "path": ["taxs", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Tax",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/taxs/1",
+               "host": ["{{base_url}}"],
+               "path": ["taxs", "1"]
+             }
+           }
+         }
+       ]
+     },
+     {
+       "name": "📏 Units",
+       "item": [
+         {
+           "name": "Create Unit",
+           "request": {
+             "method": "POST",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"name\": \"Kilogram\",\n  \"short_name\": \"kg\",\n  \"operator\": \"*\",\n  \"operation_value\": 1\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/units",
+               "host": ["{{base_url}}"],
+               "path": ["units"]
+             }
+           }
+         },
+         {
+           "name": "Get All Units",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/units",
+               "host": ["{{base_url}}"],
+               "path": ["units"]
+             }
+           }
+         },
+         {
+           "name": "Get Unit by ID",
+           "request": {
+             "method": "GET",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/units/1",
+               "host": ["{{base_url}}"],
+               "path": ["units", "1"]
+             }
+           }
+         },
+         {
+           "name": "Update Unit",
+           "request": {
+             "method": "PUT",
+             "header": [
+               {
+                 "key": "Content-Type",
+                 "value": "application/json"
+               }
+             ],
+             "body": {
+               "mode": "raw",
+               "raw": "{\n  \"name\": \"Updated Kilogram\",\n  \"short_name\": \"kg\",\n  \"operator\": \"*\",\n  \"operation_value\": 1\n}"
+             },
+             "url": {
+               "raw": "{{base_url}}/units/1",
+               "host": ["{{base_url}}"],
+               "path": ["units", "1"]
+             }
+           }
+         },
+         {
+           "name": "Delete Unit",
+           "request": {
+             "method": "DELETE",
+             "header": [],
+             "url": {
+               "raw": "{{base_url}}/units/1",
+               "host": ["{{base_url}}"],
+               "path": ["units", "1"]
+             }
+           }
+         }
+       ]
+     }
+   ]
+ } 
