@@ -5,11 +5,30 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const http = require('http');
+const https = require('https');
 const app = express();
 require("dotenv").config()
+const fs = require('fs');
+
+
+
+let hostingServer;
+if (process.env.NODE_ENV == "development") {
+  hostingServer = http.createServer(app);
+} else if (process.env.NODE_ENV == "production") {
+  const httpsOptions = {
+    cert: fs.readFileSync("./ssl/ssl_25.cert"),
+    ca: fs.readFileSync("./ssl/ca_25.cert"),
+    key: fs.readFileSync("./ssl/ssl_25.key"),
+  };
+  hostingServer = https.createServer(httpsOptions, app);
+}
+
 
 // Middleware
 app.use(helmet());
+
 //ORIGIN CONFIG
 const corsOptions = {
   origin: ["*"],
@@ -39,6 +58,9 @@ app.get("/uploads/:folder/:filename", (req, res) => {
     );
 });
 
+app.get('/api/test', (req, res) => {
+  res.status(200).json({ success: true, message: 'API is running successfully!' });
+});
 
 // API routes
 require('./src/routes')(app);
@@ -67,4 +89,4 @@ process.on("unhandledRejection", (reason, promise) => {
 
 // Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+hostingServer.listen(PORT,'192.168.1.27', () => console.log(`Server running on port ${PORT}`));
