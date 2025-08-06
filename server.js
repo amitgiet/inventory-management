@@ -42,9 +42,10 @@ app.use(express.json());
 app.use(compression());
 app.use(morgan("dev"));
 
+// Static file serving for uploads
 app.use(
     "/uploads",
-    express.static("uploads", {
+    express.static("src/uploads", {
       setHeaders: function (res, path) {
         res.set("Access-Control-Allow-Origin", "*");
       },
@@ -54,7 +55,7 @@ app.use(
 // Static file serving
 app.get("/uploads/:folder/:filename", (req, res) => {
     res.sendFile(
-      __dirname + "/uploads/" + req.params.folder + "/" + req.params.filename
+      __dirname + "/src/uploads/" + req.params.folder + "/" + req.params.filename
     );
 });
 

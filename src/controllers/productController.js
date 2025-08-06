@@ -6,11 +6,22 @@ const {
 } = require("../models");
 const slugify = require("slugify");
 const Validator = require("validatorjs");
+const fs = require("fs");
+const path = require("path");
+const { Op } = require("sequelize");
 
-/*
-  @route   POST /product
-  @desc    Create a new product category
-  @access  Private
+/* 
+  @ApiPath: /products
+  @Method: POST
+  @Params: { 
+    product_name: "string",
+    product_code: "string", 
+    product_price: "integer",
+    product_cost: "integer",
+    category_ids: "array of integers"
+  }
+  @Description: This API creates a new product with associated categories.
+  @Access: Public
 */
 const CreateProduct = async (req, res) => {
   try {
@@ -19,16 +30,22 @@ const CreateProduct = async (req, res) => {
       product_code: "required|string",
       product_price: "required|integer",
       product_cost: "required|integer",
-      category_ids: "array|required",
-      "category_ids.*": "integer",
+      category_ids: "required"
     });
-
     if (validation.fails()) {
       const [firstError] = Object.values(validation.errors.all()).flat();
-      return res.status(422).json({ success: false, message: firstError });
+      return res.apiError(firstError, 422);
     }
 
     const { category_ids, ...productData } = req.body;
+
+    // Handle image uploads
+    if (req.files && req.files.image) {
+      productData.image = req.files.image[0].filename;
+    }
+    if (req.files && req.files.banner) {
+      productData.banner = req.files.banner[0].filename;
+    }
 
     const product = await Product.create(productData);
 
@@ -38,68 +55,75 @@ const CreateProduct = async (req, res) => {
       include: [{ model: Category, as: "categories" }],
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully",
-      data: productWithCategories,
-    });
+    res.apiSuccess("Product created successfully", productWithCategories);
   } catch (error) {
     console.error("CreateProduct Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
-/*
-  @route   Get /product
-  @desc    Get all roducts
-  @access  Private
+/* 
+  @ApiPath: /products
+  @Method: GET
+  @Params: none
+  @Description: Fetch all products with their associated categories.
+  @Access: Public
 */
 const GetAllProducts = async (req, res) => {
   try {
+    const { search } = req.query;
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { product_name: { [Op.like]: `%${search}%` } },
+          { product_code: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
+    console.log(where)
     const products = await Product.findAll({
+      where,
       order: [["id", "DESC"]],
       include: [{ model: Category, as: "categories" }],
     });
-    res.json({ success: true, data: products });
+    res.apiSuccess("Products fetched successfully", products);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
-/*
-  @route   GET /product/:id
-  @desc    Get Product by id
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: GET
+  @Params: { id: "Product ID" }
+  @Description: Fetch a single product by ID.
+  @Access: Public
 */
 const GetProductById = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    res.json({ success: true, data: product });
+      return res.apiError("Product not found", 404);
+    res.apiSuccess("Product fetched successfully", product);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
-/*
-  @route   POST /product/:id
-  @desc    Update product
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: PUT
+  @Params: { 
+    id: "Product ID",
+    product_name: "string",
+    product_code: "string", 
+    product_price: "integer",
+    product_cost: "integer",
+    category_ids: "array of integers"
+  }
+  @Description: Update an existing product by ID with associated categories.
+  @Access: Public
 */
 const UpdateProduct = async (req, res) => {
   try {
@@ -114,18 +138,37 @@ const UpdateProduct = async (req, res) => {
 
     if (validation.fails()) {
       const [firstError] = Object.values(validation.errors.all()).flat();
-      return res.status(422).json({ success: false, message: firstError });
+      return res.apiError(firstError, 422);
     }
 
     const product = await Product.findByPk(req.params.id);
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+      return res.apiError("Product not found", 404);
     }
 
     const { category_ids, ...productData } = req.body;
+
+    // Handle image uploads
+    if (req.files && req.files.image) {
+      // Delete old image if exists
+      if (product.image) {
+        const oldImagePath = path.join(__dirname, '../uploads/products', product.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      productData.image = req.files.image[0].filename;
+    }
+    if (req.files && req.files.banner) {
+      // Delete old banner if exists
+      if (product.banner) {
+        const oldBannerPath = path.join(__dirname, '../uploads/products', product.banner);
+        if (fs.existsSync(oldBannerPath)) {
+          fs.unlinkSync(oldBannerPath);
+        }
+      }
+      productData.banner = req.files.banner[0].filename;
+    }
 
     // Update product fields
     await product.update(productData);
@@ -138,50 +181,46 @@ const UpdateProduct = async (req, res) => {
       include: [{ model: Category, as: "categories" }],
     });
 
-    return res.json({
-      success: true,
-      message: "Product updated successfully",
-      data: updatedProduct,
-    });
+    return res.apiSuccess("Product updated successfully", updatedProduct);
   } catch (error) {
     console.error("UpdateProduct Error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
 
-/*
-  @route   DELETE /product/:id
-  @desc    Delete Product by id
-  @access  Private
+/* 
+  @ApiPath: /products/:id
+  @Method: DELETE
+  @Params: { id: "Product ID" }
+  @Description: Delete a product by ID.
+  @Access: Public
 */
 const DeleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.apiError("Product not found", 404);
 
     await product.destroy();
-    res.json({ success: true, message: "Product deleted successfully" });
+    res.apiSuccess("Product deleted successfully");
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    res.apiError("Internal server error", 500, error);
   }
 };
 
-/*
-  @route   POST /product-category
-  @desc    Create a new product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories
+  @Method: POST
+  @Params: { 
+    name: "string",
+    slug: "string (optional)",
+    parent_id: "integer (optional)",
+    is_active: "boolean (optional)",
+    attributes: "array (optional)"
+  }
+  @Description: This API creates a new product category with optional attributes.
+  @Access: Public
 */
 const CreateProductCategory = async (req, res) => {
   try {
@@ -264,10 +303,12 @@ const CreateProductCategory = async (req, res) => {
   }
 };
 
-/*
-  @route   GET /product-category
-  @desc    Get all product categories
-  @access  Public
+/* 
+  @ApiPath: /product-categories
+  @Method: GET
+  @Params: none
+  @Description: Fetch all product categories with their attributes and values.
+  @Access: Public
 */
 const GetAllProductCategories = async (req, res) => {
   try {
@@ -302,10 +343,12 @@ const GetAllProductCategories = async (req, res) => {
   }
 };
 
-/*
-  @route   GET /product-category/:id
-  @desc    Get a single product category by ID
-  @access  Public
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: GET
+  @Params: { id: "Category ID" }
+  @Description: Fetch a single product category by ID with its attributes and values.
+  @Access: Public
 */
 const GetProductCategoryById = async (req, res) => {
   try {
@@ -335,10 +378,19 @@ const GetProductCategoryById = async (req, res) => {
   }
 };
 
-/*
-  @route   PUT /product-category/:id
-  @desc    Update a product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: PUT
+  @Params: { 
+    id: "Category ID",
+    name: "string (optional)",
+    slug: "string (optional)",
+    parent_id: "integer (optional)",
+    is_active: "boolean (optional)",
+    attributes: "array (optional)"
+  }
+  @Description: Update an existing product category by ID with optional attributes.
+  @Access: Public
 */
 const UpdateProductCategory = async (req, res) => {
   try {
@@ -415,10 +467,12 @@ const UpdateProductCategory = async (req, res) => {
   }
 };
 
-/*
-  @route   DELETE /product-category/:id
-  @desc    Delete a product category
-  @access  Private
+/* 
+  @ApiPath: /product-categories/:id
+  @Method: DELETE
+  @Params: { id: "Category ID" }
+  @Description: Delete a product category by ID.
+  @Access: Public
 */
 const DeleteProductCategory = async (req, res) => {
   try {
